@@ -1,0 +1,27 @@
+{
+  "name": "delay5",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "dependencies": {
+    "@chainsafe/libp2p-noise": "^16.0.0",
+    "@chainsafe/libp2p-yamux": "^7.0.1",
+    "@libp2p/tcp": "^10.0.9",
+    "libp2p": "^2.1.8",
+    "prettier": "^3.3.3",
+    "prettier-plugin-organize-imports": "^4.1.0",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.2"
+  },
+  "scripts": {
+    "test": "vitest",
+    "format": "prettier index.test.ts --write"
+  },
+  "prettier": {
+    "plugins": [
+      "prettier-plugin-organize-imports"
+    ]
+  },
+  "author": "tabcat",
+  "license": "MIT"
+}
