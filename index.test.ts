@@ -55,6 +55,24 @@ describe("delay5", () => {
 
   it("passes with 5 delay", async () => {
     console.info("start");
+    const [node1, node2] = await Promise.all([createNode(), createNode()]);
+
+    console.info("dial");
+    node2.dial(node1.getMultiaddrs()).catch((e) => {}); // dont wait here
+
+    await delay(5); // but put a little bit of delay
+
+    console.info("stop");
+    await node1.stop();
+    console.log("start again");
+    await node1.start();
+    console.log("stop all");
+    await Promise.all([node1, node2].map((x) => x.stop()));
+    console.log("done");
+  });
+
+  it("passes with 5 delay (webSockets)", async () => {
+    console.info("start");
     const [node1, node2] = await Promise.all([
       createNode(true),
       createNode(true),
