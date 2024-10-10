@@ -1,6 +1,7 @@
 import { noise } from "@chainsafe/libp2p-noise";
 import { yamux } from "@chainsafe/libp2p-yamux";
 import { tcp } from "@libp2p/tcp";
+import { webSockets } from "@libp2p/websockets";
 import { createLibp2p } from "libp2p";
 import { describe, it } from "vitest";
 
@@ -12,13 +13,21 @@ export const delay = (ms: number) => {
   });
 };
 
-async function createNode() {
+async function createNode(ws?: boolean) {
+  let getTransports = () => [tcp()];
+  let listen = ["/ip4/127.0.0.1/tcp/0"];
+
+  if (ws === true) {
+    getTransports = () => [webSockets()];
+    listen[0] = listen[0] + "/ws";
+  }
+
   const node = await createLibp2p<any>({
-    transports: [tcp()],
+    transports: getTransports(),
     connectionEncrypters: [noise()],
     streamMuxers: [yamux()],
     addresses: {
-      listen: ["/ip4/127.0.0.1/tcp/0"],
+      listen,
     },
   });
 
@@ -46,7 +55,10 @@ describe("delay5", () => {
 
   it("passes with 5 delay", async () => {
     console.info("start");
-    const [node1, node2] = await Promise.all([createNode(), createNode()]);
+    const [node1, node2] = await Promise.all([
+      createNode(true),
+      createNode(true),
+    ]);
 
     console.info("dial");
     node2.dial(node1.getMultiaddrs()).catch((e) => {}); // dont wait here
